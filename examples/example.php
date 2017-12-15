@@ -1,4 +1,5 @@
 <?php
+$start = microtime(true);
 header("Content-Type: text/plain");
 require_once("../pushthis.php");
 use PushThis\PushThis;
@@ -81,5 +82,5 @@ $c = json_decode(file_get_contents("config.json"), true);
 	echo $ports->send();
 
 
-
+echo PHP_EOL.(microtime(true) - $start);
 ?>
