@@ -177,7 +177,7 @@ class PushThis {
 			"payload" => array(
 			)
 		);
-		$post['payload']['data'] = array_merge($post['payload']['data'], $data);
+		$post['payload'] = array_merge($post['payload'], $data);
 		print_r($post);
 		//return $this->curl_post($post, $this->config['server']);
 	}
