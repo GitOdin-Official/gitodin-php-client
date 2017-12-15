@@ -1,11 +1,12 @@
 <?php
+namespace PushThis;
 
 //      ____                     __     __     __      _                _        
 //     / __ \  __  __   _____   / /_   / /_   / /_    (_)   _____      (_)  ____ 
 //    / /_/ / / / / /  / ___/  / __ \ / __/  / __ \  / /   / ___/     / /  / __ \
 //   / ____/ / /_/ /  (__  )  / / / // /_   / / / / / /   (__  )  _  / /  / /_/ /
 //  /_/      \__,_/  /____/  /_/ /_/ \__/  /_/ /_/ /_/   /____/  (_)/_/   \____/ 
-//                                                                               
+                                                
 define("PUSHTHIS_VERSION_PHP", 1.0);
 
 class PushThis {
@@ -20,7 +21,7 @@ class PushThis {
 	
 	public function __construct($key = null, $secret = null, $region_server_name = "na"){
 		if($key === null || $secret === null){
-			throw new PushThisException("Key or Secret not Provided!");
+			throw new Exception("Key or Secret not Provided!");
 		}
 		
 		$this->config['key'] = $key;

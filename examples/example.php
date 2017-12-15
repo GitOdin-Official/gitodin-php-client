@@ -1,6 +1,7 @@
 <?php
 header("Content-Type: text/plain");
 require_once("../pushthis.php");
+use PushThis\PushThis;
 
 ## Ignore. Calling the Config File with the Data in it.
 $c = json_decode(file_get_contents("config.json"), true);
