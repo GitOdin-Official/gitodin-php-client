@@ -9,6 +9,7 @@ $c = json_decode(file_get_contents("config.json"), true);
 
 // Setup
 	$ports = new PushThis($c['key'], $c['secret']);
+	$ports->setPem("cacert.pem"); // Enable SSL Verification
 
 // Set some Default Infor for Express Request
 	$ports->set_channel("pushthisChat");

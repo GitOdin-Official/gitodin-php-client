@@ -11,13 +11,15 @@ define("PUSHTHIS_VERSION_PHP", 1.0);
 
 class PushThis {
 	private $servers = array(
-		"na" => "http://na.pushthis.io/api",
-		"eu" => "http://eu.pushthis.io/api"
+		"na" => "https://na.pushthis.io/api",
+		"eu" => "https://eu.pushthis.io/api"
 	);
 	private $config = array();
 	public $channel = null;
 	public $event = null;
 	public $messageQueue = array();
+	private $pem_cert = null;
+	public $errors = array();
 	
 	public function __construct($key = null, $secret = null, $region_server_name = "na"){
 		if($key === null || $secret === null){
@@ -29,6 +31,21 @@ class PushThis {
 		
 		// Set the Server based off of the Region Tag or set by URL in.
 		$this->config['server'] = isset($this->servers[$region_server_name]) ? $this->servers[$region_server_name] : $region_server_name;
+	}
+	
+	/**
+	 * Here you can specify the Root CA for CURL to verity the Host Connection.
+	 * @link https://curl.haxx.se/ca/cacert.pem
+	 */
+	public function setPem($filePath){
+		// https://stackoverflow.com/questions/24611640/
+		// https://curl.haxx.se/ca/cacert.pem
+		if(file_exists($filePath)){
+			$this->pem_cert = realpath($filePath);
+		}
+		else{
+			return false;
+		}
 	}
 	
 	private function get_extension($file) {
@@ -65,8 +82,17 @@ class PushThis {
 	 */
 	private function curl_post($data, $url){
 		$content = json_encode($data);
-
 		$ch = curl_init($url);
+		
+		if(isset($this->pem_cert) && file_exists($this->pem_cert)){
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+			curl_setopt($ch, CURLOPT_CAINFO, $this->pem_cert);
+		}
+		else{
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		}
+		
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -76,6 +102,7 @@ class PushThis {
 				'Content-Length: ' . strlen($content)
 			));
 		$result = curl_exec($ch);
+		if(curl_error($ch) != ""){ $this->errors[] = curl_error($ch); /* Log Error */ }
 		curl_close($ch);
 		return $result;
 	}
@@ -119,19 +146,20 @@ class PushThis {
 	 */
 	public function send($data = null){
 		// Start the Request Data
-		$post = array(
-			"key" => $this->config['key'],
-			"secret" => $this->config['secret'],
-			"payload" => array()
-		);
-		$t = array(
-			'channel' => $this->channel,
-			'event'   => $this->event,
-			'data'    => null
-		); // Payload Template
+			$post = array(
+				"key" => $this->config['key'],
+				"secret" => $this->config['secret'],
+				"payload" => array()
+			);
+		// Payload Template
+			$t = array(
+				'channel' => $this->channel,
+				'event'   => $this->event,
+				'data'    => null
+			);
 		
 		
-		// Check if you are Sending for the Pending Payloads.
+	  /// Check if you are Sending for the Pending Payloads.
 		if($data === null) {
 			if(!empty($this->messageQueue)){
 				// Running for Message Queue
@@ -140,7 +168,6 @@ class PushThis {
 			}
 			else{ /* Queue is Empty! */ return false; }
 		}
-	///// NOT QUEUE RELATED
 	  /// Payload->Data Array, Multi Request
 		else if($this->is_marray($data)){
 			// Handle if it is a Multidimensional Array
@@ -162,7 +189,6 @@ class PushThis {
 		else {
 			throw new Exception("Hmm... Pushthis is Pushed Out!");
 		}
-		//return json_encode($post);
 		return $this->curl_post($post, $this->config['server']);
 	}
 	
@@ -171,7 +197,6 @@ class PushThis {
 	 * This funciton requires you to provide all of the Needed info for the Payload
 	 */
 	public function send_raw($data){
-		// Start the Request Data
 		$post = array(
 			"key" => $this->config['key'],
 			"secret" => $this->config['secret'],
@@ -179,8 +204,7 @@ class PushThis {
 			)
 		);
 		$post['payload'] = array_merge($post['payload'], $data);
-		print_r($post);
-		//return $this->curl_post($post, $this->config['server']);
+		return $this->curl_post($post, $this->config['server']);
 	}
 }
 ?>
