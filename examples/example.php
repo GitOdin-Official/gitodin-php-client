@@ -1,58 +1,40 @@
 <?php
-$start = microtime(true);
-header("Content-Type: text/plain");
 //require_once("../src/pushthis.php"); //Without Composer
 require_once("../vendor/autoload.php"); //With Composer
 use Pushthis\Pushthis;
 
-## Ignore. Calling the Config File with the Data in it.
-$c = json_decode(file_get_contents("config.json"), true);
+/**
+ * Setup
+ * You need to Start Pushthis and give it your key to Connect with.
+ */
+	$pushthis = new Pushthis('key', 'secret');
+	$pushthis->setPem("cacert.pem"); // Enable SSL Verification
 
-// Setup
-	$ports = new Pushthis($c['key'], $c['secret']);
-	$ports->setPem("cacert.pem"); // Enable SSL Verification
+/** 
+ * Set some Default Data for Express Request
+ *
+ * Using this you can make requests with less info to put in!
+ */
+	$pushthis->set_channel("demoChannel");
+	$pushthis->set_event("newMessages");
 
-// Set some Default Infor for Express Request
-	$ports->set_channel("demoChannel");
-	$ports->set_event("newMessages");
-
-// Do Express Request
-	echo $ports->send("MY STRING");
-	echo PHP_EOL;
-	echo $ports->send(array(
+/**
+ * xpress Request
+ *
+ * Using the Info Defined above, set_channel and set_event, make a request.
+ */
+	echo $pushthis->send(array(
 		'username' => 'bob dole',
 		'message'  => 'omg soo cool'
 	));
-	echo PHP_EOL;
 
-// Do a Full Request
-	echo $ports->send(array(
-		'event' => 'example-eventH',
-		'channel' => 'example-channelC',
-		'data' => [
-			'username' => 'bob dole',
-			'message'  => 'omg soo cool'
-		]
-	));
-	echo PHP_EOL;
-	echo $ports->send(array(
-		'event' => 'example-event',
-		'data' => [
-			'message' => 'Hello World'
-		]
-	));
-	echo PHP_EOL;
-	echo $ports->send(array(
-		'channel' => 'pushhisNetwork',
-		'event' => 'demo',
-		'data' => [
-			'message' => 'Hello from the PHP API ~ '. PUSHTHIS_VERSION_NAME
-		]
-	));
-	echo PHP_EOL;
-
-// Do a Bundle Request
-	echo $ports->send(array(
+/**
+ * Bundled Request
+ *
+ * Using the Bundeled Request you can send many events at once.
+ * If you have set the Defaults of set_channel and set_event, they will be used.
+ */
+	echo $pushthis->send(array(
 		array(
 			'event' => 'example-even0t',
 			'channel' => 'example-channel00',
@@ -70,10 +52,19 @@ $c = json_decode(file_get_contents("config.json"), true);
 			]
 		)
 	));
-	echo PHP_EOL;
 
-// Do a Queue Request
-	$ports->add(array(
+
+/**
+ * Queued Request
+ *
+ * Using the Message Queue you can add as many payloads
+ *  you want to the request.
+ * 
+ * If the Request Fails you may be reaching the Limit of the Post Size.
+ * Please refer to the Docs for Help.
+ * @link http://pushthis.io/documentation
+ */
+	$pushthis->add(array(
 		'event' => 'event',
 		'channel' => 'python',
 		'data' => [
@@ -81,7 +72,7 @@ $c = json_decode(file_get_contents("config.json"), true);
 			'message'  => 'FREE MONEY'
 		]
 	));
-	$ports->add(array(
+	$pushthis->add(array(
 		'event' => 'broadcast',
 		'channel' => 'bitcoin',
 		'data' => [
@@ -89,8 +80,6 @@ $c = json_decode(file_get_contents("config.json"), true);
 			'message'  => 'FREE BITCOIN'
 		]
 	));
-	echo $ports->send();
-
-
-echo PHP_EOL.(microtime(true) - $start);
+	echo $pushthis->send();
+	
 ?>
