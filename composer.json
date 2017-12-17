@@ -1,0 +1,14 @@
+{
+    "name": "pushthis/pushthis",
+    "description": "Pushthis.io PHP Package",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Noah Halstead",
+            "email": "nhalstead00@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}

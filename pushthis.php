@@ -1,5 +1,5 @@
 <?php
-namespace PushThis;
+namespace Pushthis;
 
 //      ____                     __     __     __      _                _        
 //     / __ \  __  __   _____   / /_   / /_   / /_    (_)   _____      (_)  ____ 
@@ -10,7 +10,7 @@ namespace PushThis;
 define("PUSHTHIS_VERSION_PHP", 1.0);
 define("PUSHTHIS_VERSION_NAME", "PUSHTHIS_PHP_API_".PUSHTHIS_VERSION_PHP);
 
-class PushThis {
+class Pushthis {
 	private $servers = array(
 		"na" => "https://na.pushthis.io/api",
 		"eu" => "https://eu.pushthis.io/api"
