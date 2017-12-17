@@ -5,6 +5,7 @@ use Pushthis\Pushthis;
 
 /**
  * Setup
+ * 
  * You need to Start Pushthis and give it your key to Connect with.
  */
 	$pushthis = new Pushthis('key', 'secret');
@@ -19,7 +20,7 @@ use Pushthis\Pushthis;
 	$pushthis->set_event("newMessages");
 
 /**
- * xpress Request
+ * Express Request
  *
  * Using the Info Defined above, set_channel and set_event, make a request.
  */
