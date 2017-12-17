@@ -8,6 +8,7 @@ namespace PushThis;
 //  /_/      \__,_/  /____/  /_/ /_/ \__/  /_/ /_/ /_/   /____/  (_)/_/   \____/ 
                                                 
 define("PUSHTHIS_VERSION_PHP", 1.0);
+define("PUSHTHIS_VERSION_NAME", "PUSHTHIS_PHP_API_".PUSHTHIS_VERSION_PHP);
 
 class PushThis {
 	private $servers = array(

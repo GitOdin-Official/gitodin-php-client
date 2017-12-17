@@ -17,7 +17,7 @@ $c = json_decode(file_get_contents("config.json"), true);
 
 // Do Express Request
 	echo $ports->send("MY STRING");
-	echo "\n";
+	echo PHP_EOL;
 	echo $ports->send(array(
 		'username' => 'bob dole',
 		'message'  => 'omg soo cool'
@@ -38,6 +38,13 @@ $c = json_decode(file_get_contents("config.json"), true);
 		'event' => 'example-event',
 		'data' => [
 			'message' => 'Hello World'
+		]
+	));
+	echo PHP_EOL;
+	echo $ports->send(array(
+		'event' => 'demo',
+		'data' => [
+			'message' => 'Hello from the PHP API ~ '. PUSHTHIS_VERSION_NAME
 		]
 	));
 	echo PHP_EOL;
