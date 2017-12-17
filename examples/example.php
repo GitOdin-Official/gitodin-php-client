@@ -1,7 +1,8 @@
 <?php
 $start = microtime(true);
 header("Content-Type: text/plain");
-require_once("../pushthis.php");
+//require_once("../src/pushthis.php"); //Without Composer
+require_once("../vendor/autoload.php"); //With Composer
 use Pushthis\Pushthis;
 
 ## Ignore. Calling the Config File with the Data in it.

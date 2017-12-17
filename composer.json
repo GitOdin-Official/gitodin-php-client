@@ -1,6 +1,10 @@
 {
-    "name": "pushthis/pushthis",
+    "name": "pushthis\/pushthis",
     "description": "Pushthis.io PHP Package",
+    "keywords": [
+        "Pushthis.io",
+        "Pushthis"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -10,5 +14,18 @@
         }
     ],
     "minimum-stability": "stable",
-    "require": {}
+    "": {
+        "php": ">=4.0.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pushthis\\": "src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https:\/\/github.com\/nhalstead\/PushThis-PHP-API"
+        }
+    ]
 }
