@@ -12,7 +12,7 @@ $c = json_decode(file_get_contents("config.json"), true);
 	$ports->setPem("cacert.pem"); // Enable SSL Verification
 
 // Set some Default Infor for Express Request
-	$ports->set_channel("pushthisChat");
+	$ports->set_channel("demoChannel");
 	$ports->set_event("newMessages");
 
 // Do Express Request
@@ -42,6 +42,7 @@ $c = json_decode(file_get_contents("config.json"), true);
 	));
 	echo PHP_EOL;
 	echo $ports->send(array(
+		'channel' => 'pushhisNetwork',
 		'event' => 'demo',
 		'data' => [
 			'message' => 'Hello from the PHP API ~ '. PUSHTHIS_VERSION_NAME
