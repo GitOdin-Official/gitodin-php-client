@@ -2,13 +2,13 @@
 $start = microtime(true);
 header("Content-Type: text/plain");
 require_once("../pushthis.php");
-use PushThis\PushThis;
+use Pushthis\Pushthis;
 
 ## Ignore. Calling the Config File with the Data in it.
 $c = json_decode(file_get_contents("config.json"), true);
 
 // Setup
-	$ports = new PushThis($c['key'], $c['secret']);
+	$ports = new Pushthis($c['key'], $c['secret']);
 	$ports->setPem("cacert.pem"); // Enable SSL Verification
 
 // Set some Default Infor for Express Request
