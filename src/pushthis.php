@@ -6,7 +6,7 @@ namespace Pushthis;
 //    / /_/ / / / / /  / ___/  / __ \ / __/  / __ \  / /   / ___/     / /  / __ \
 //   / ____/ / /_/ /  (__  )  / / / // /_   / / / / / /   (__  )  _  / /  / /_/ /
 //  /_/      \__,_/  /____/  /_/ /_/ \__/  /_/ /_/ /_/   /____/  (_)/_/   \____/ 
-                                                
+
 define("PUSHTHIS_VERSION_PHP", 1.0);
 define("PUSHTHIS_VERSION_NAME", "PUSHTHIS_PHP_API_".PUSHTHIS_VERSION_PHP);
 
@@ -108,7 +108,9 @@ class Pushthis {
 		return $result;
 	}
 	
-	// Used With Single Payloads
+	/**
+	 * Used to set defaults in Requests.
+	 */
 	public function set_channel ($in){
 		return $this->channel = $in;
 	}
@@ -117,6 +119,7 @@ class Pushthis {
 	}
 	
 	/**
+	 * Is Multidimensional Array
 	 * @link https://pageconfig.com/post/checking-multidimensional-arrays-in-php
 	 */
 	private function is_marray( $arr ) {
@@ -142,6 +145,7 @@ class Pushthis {
 	
 	/**
 	 * SINGLE PAYLOAD and SEND FOR MULTI
+	 *
 	 * Prepair the Request and Tell curl_post to do it.
 	 * This Function just needs the Payload Data and you can Provide the 
 	 */
@@ -198,12 +202,16 @@ class Pushthis {
 	 * This funciton requires you to provide all of the Needed info for the Payload
 	 */
 	public function send_raw($data){
-		$post = array(
-			"key" => $this->config['key'],
-			"secret" => $this->config['secret'],
-			"payload" => array(
-			)
-		);
+		// Start the Request Data
+			$post = array(
+				"key" => $this->config['key'],
+				"secret" => $this->config['secret'],
+				"payload" => array(
+					'channel' => $this->channel,
+					'event'   => $this->event,
+					'data'    => null
+				)
+			);
 		$post['payload'] = array_merge($post['payload'], $data);
 		return $this->curl_post($post, $this->config['server']);
 	}

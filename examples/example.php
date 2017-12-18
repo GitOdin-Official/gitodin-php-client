@@ -24,10 +24,11 @@ use Pushthis\Pushthis;
  *
  * Using the Info Defined above, set_channel and set_event, make a request.
  */
-	echo $pushthis->send(array(
+	$express_response = $pushthis->send(array(
 		'username' => 'bob dole',
 		'message'  => 'omg soo cool'
 	));
+	echo $express_response;
 
 /**
  * Bundled Request
@@ -35,7 +36,7 @@ use Pushthis\Pushthis;
  * Using the Bundeled Request you can send many events at once.
  * If you have set the Defaults of set_channel and set_event, they will be used.
  */
-	echo $pushthis->send(array(
+	$bundled_response = $pushthis->send(array(
 		array(
 			'event' => 'example-even0t',
 			'channel' => 'example-channel00',
@@ -53,6 +54,7 @@ use Pushthis\Pushthis;
 			]
 		)
 	));
+	echo $bundled_response;
 
 
 /**
@@ -81,6 +83,7 @@ use Pushthis\Pushthis;
 			'message'  => 'FREE BITCOIN'
 		]
 	));
-	echo $pushthis->send();
+	$queue_response = $pushthis->send();
+	echo queue_response;
 	
 ?>
