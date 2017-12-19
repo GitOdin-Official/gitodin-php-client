@@ -13,9 +13,10 @@
             "email": "nhalstead00@gmail.com"
         }
     ],
-    "minimum-stability": "stable",
-    "": {
-        "php": ">=4.0.3"
+    "minimum-stability": "master",
+    "require": {
+        "php": ">=4.0.3",
+        "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {
@@ -25,7 +26,7 @@
     "repositories": [
         {
             "type": "git",
-            "url": "https:\/\/github.com\/nhalstead\/PushThis-PHP-API"
+            "url": "https:\/\/github.com\/pushthis\/pushthis-php-http"
         }
     ]
 }
