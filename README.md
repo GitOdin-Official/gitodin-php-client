@@ -15,11 +15,12 @@ This is a package made for PHP, to interact with the Pushthis RESTful API Networ
 # How to use
 > Define your keys and access point
 ```php
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
 ```
 
 > Single Payload Requests
 ```php
-$pushthis = new Pushthis('key', 'secret');
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
 $pushthis->send(array(
 	'channel' => 'the_chat',
 	'event' => 'new_message',
@@ -30,7 +31,7 @@ $pushthis->send(array(
 
 > Multi-Payload Requests
 ```php
-$pushthis = new Pushthis('key', 'secret');
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
 $pushthis->add(array(
 	'channel' => 'the_chat',
 	'event' => 'new_message',
@@ -52,7 +53,7 @@ $pushthis->send();
 
 > Authorizing Payload Request
 ```php
-$pushthis = new Pushthis('key', 'secret');
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
 $pushthis->authorize(true, "channel", "socketId");
 ```
 
