@@ -1,15 +1,63 @@
-# ![Pushthis.io Code](https://i.imgur.com/Wtin9ju.png)
+```//      ____                     __     __     __      _                _        
+  //     / __ \  __  __   _____   / /_   / /_   / /_    (_)   _____      (_)  ____ 
+  //    / /_/ / / / / /  / ___/  / __ \ / __/  / __ \  / /   / ___/     / /  / __ \
+  //   / ____/ / /_/ /  (__  )  / / / // /_   / / / / / /   (__  )  _  / /  / /_/ /
+  //  /_/      \__,_/  /____/  /_/ /_/ \__/  /_/ /_/ /_/   /____/  (_)/_/   \____/ 
+```
 
-Using [Pushthis.io](http://pushthis.io/) you turn `POST` requests into Socket.IO messages.
+# Pushthis PHP Package
+This is a package made for PHP, to interact with the Pushthis RESTful API Network Access Point to send payloads through the network to your client side in real-time! 
 
-Just think, sending events to your Bot or to a User connected to your Website!
+# Installing
+> coming soon
 
-Using **only** `CURL` and `POST` with no complicated framework to make it work! *Just Simplicity!*
+# How to use
+> Define your keys and access point
+```php
+```
 
-You can send events via any language that supports `POST` requests and you can recive the messages at any subscribed points via Websockets.
+> Single Payload Requests
+```php
+$pushthis = new Pushthis('key', 'secret');
+$pushthis->send(array(
+	'channel' => 'the_chat',
+	'event' => 'new_message',
+	'username' => 'john_doe',
+	'message'  => 'Hello Everyone!'
+));
+```
 
-- [X] Send a Single Event
-- [X] Send Many Events at Once (Bulk Messages)
-- [X] Store messages in a Queue and Send in Bulk
+> Multi-Payload Requests
+```php
+$pushthis = new Pushthis('key', 'secret');
+$pushthis->add(array(
+	'channel' => 'the_chat',
+	'event' => 'new_message',
+	'data' => array(
+		'username' => 'john_doe',
+		'file_name'  => 'Hello Everyone!'
+	)
+));
+$pushthis->add(array(
+	'channel' => 'system',
+	'event' => 'alert',
+	'data' => array(
+		'username' => 'john_doe',
+		'message'  => 'THE INTERNET IS OFFLINE!'
+	)
+));
+$pushthis->send();
+```
 
-###### For more Information on Pusthis and the related services goto [Pushthis.io](http://pushthis.io/)
+> Authorizing Payload Request
+```php
+$pushthis = new Pushthis('key', 'secret');
+$pushthis->authorize(true, "channel", "socketId");
+```
+
+# Indepth Documentation
+> Documentation for Pushthis.io can be found at https://pushthis.io/documentation
+
+# Contributors & Honorable Mentions
+- Devitgg @ https://github.com/devitgg
+- Nhalstead @ https://github.com/nhalstead
