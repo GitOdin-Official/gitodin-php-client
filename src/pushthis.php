@@ -40,6 +40,15 @@ class Pushthis {
 	}
 	
 	/**
+	 * Check URL to see if it Ends with /auth
+	 * @link https://regex101.com/r/fTPAZJ/2/
+	 */
+	public function is_url_auth(){
+		$m = preg_match_all("/^((http[s]?):\/)?\/?([^:\/\s]+)((\/\w+)*\/)auth/", $this->config['server']);
+		return $m;
+	}
+	
+	/**
 	 * Check URL to see if it Ends with /api
 	 * @link https://regex101.com/r/fTPAZJ/2/
 	 */
@@ -52,7 +61,7 @@ class Pushthis {
 	 * Allow or Deny access to a Private Channel by the Socket Id and channel.
 	 */
 	public function authorize($allow = false, $channel, $socketId){
-		if($this->is_url_api()) { 
+		if(!$this->is_url_auth()) { 
 			// THE URL IS NOT CORRECT FOR A AUTH REQUEST
 			$this->errors[] = "URL is not the Auth Access Point. Please Refer to the Pushthis.io Pocumentation for more information.";
 			return false;
