@@ -10,9 +10,23 @@
 This is a package made for PHP, to interact with the Pushthis RESTful API Network Access Point to send payloads through the network to your client side in real-time! 
 
 # Installing
-> coming soon
+```sh
+composer require pushthis/pushthis
+```
 
 # How to use
+>Define the package 
+```php
+require_once("autoload.php");
+use Pushthis\Pushthis;
+```
+
+> **NOTE** -- if your using any PHP Framework, the following is not required.
+```php
+require_once("autoload.php"); 
+```
+
+
 > Define your keys and access point
 ```php
 $pushthis = new Pushthis('key', 'secret', 'Access Point');
