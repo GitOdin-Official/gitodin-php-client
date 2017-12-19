@@ -97,7 +97,7 @@ class Pushthis {
 			);
 			
 		$post['payload'] = $t;
-		return $this->curl_post($post, $this->config['server']."auth");
+		return $this->curl_post($post, $this->config['server']."/auth");
 		
 	}
 	
@@ -108,7 +108,7 @@ class Pushthis {
 	private function curl_post($data, $url){
 		$content = json_encode($data);
 		$ch = curl_init($url);
-		echo $content;
+		
 		// Check if the Root Pem file is defiend, Yes? Verify Connection
 		if(isset($this->pem_cert) && file_exists($this->pem_cert)){
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
