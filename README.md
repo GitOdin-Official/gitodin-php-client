@@ -21,7 +21,7 @@ require_once("autoload.php");
 use Pushthis\Pushthis;
 ```
 
-> **NOTE** -- if your using any PHP Framework, the following is not required.
+> **NOTE** -- if your using any PHP Framework, the following is not required. The framework is already doing it.
 ```php
 require_once("autoload.php"); 
 ```
