@@ -1,3 +1,4 @@
+
 ```//      ____                     __     __     __      _                _        
   //     / __ \  __  __   _____   / /_   / /_   / /_    (_)   _____      (_)  ____ 
   //    / /_/ / / / / /  / ___/  / __ \ / __/  / __ \  / /   / ___/     / /  / __ \
@@ -14,19 +15,46 @@ This is a package made for PHP, to interact with the Pushthis RESTful API Networ
 # How to use
 > Define your keys and access point
 ```php
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
 ```
 
 > Single Payload Requests
 ```php
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
+$pushthis->send(array(
+	'channel' => 'the_chat',
+	'event' => 'new_message',
+	'username' => 'john_doe',
+	'message'  => 'Hello Everyone!'
+));
 ```
 
 > Multi-Payload Requests
 ```php
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
+$pushthis->add(array(
+	'channel' => 'the_chat',
+	'event' => 'new_message',
+	'data' => array(
+		'username' => 'john_doe',
+		'file_name'  => 'Hello Everyone!'
+	)
+));
+$pushthis->add(array(
+	'channel' => 'system',
+	'event' => 'alert',
+	'data' => array(
+		'username' => 'john_doe',
+		'message'  => 'THE INTERNET IS OFFLINE!'
+	)
+));
+$pushthis->send();
 ```
 
 > Authorizing Payload Request
 ```php
-
+$pushthis = new Pushthis('key', 'secret', 'Access Point');
+$pushthis->authorize(true, "channel", "socketId");
 ```
 
 # Indepth Documentation
