@@ -63,7 +63,7 @@ class Pushthis {
 	public function authorize($allow = false, $channel, $socketId){
 		if(!$this->is_url_auth()) { 
 			// THE URL IS NOT CORRECT FOR A AUTH REQUEST
-			$this->errors[] = "URL is not the Auth Access Point. Please Refer to the Pushthis.io Pocumentation for more information.";
+			$this->errors[] = "URL is not the Auth Access Point. Please Refer to the Pushthis.io Documentation for more information.";
 			return false;
 		}
 		if(!isset($channel) || !isset($socketId)){ return false; }
@@ -158,9 +158,9 @@ class Pushthis {
 	 * This Function just needs the Payload Data and you can Provide the 
 	 */
 	public function send($data = null){
-		if($this->is_url_api()) { 
+		if(!$this->is_url_api()) { 
 			// THE URL IS NOT CORRECT FOR A SEND REQUEST
-			$this->errors[] = "URL is not the API Access Point. Please Refer to the Pushthis.io Pocumentation for more information.";
+			$this->errors[] = "URL is not the API Access Point. Please Refer to the Pushthis.io Documentation for more information.";
 			return false;
 		}
 		
