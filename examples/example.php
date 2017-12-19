@@ -8,7 +8,7 @@ use Pushthis\Pushthis;
  * 
  * You need to Start Pushthis and give it your key to Connect with.
  */
-	$pushthis = new Pushthis('key', 'secret');
+	$pushthis = new Pushthis('key', 'secret', 'Access Point');
 	$pushthis->setPem("cacert.pem"); // Enable SSL Verification
 
 /** 
@@ -86,4 +86,5 @@ use Pushthis\Pushthis;
 	$queue_response = $pushthis->send();
 	echo $queue_response;
 	
+print_r($pushthis->errors); // Show the Tracked the Errors
 ?>
