@@ -13,7 +13,6 @@
             "email": "nhalstead00@gmail.com"
         }
     ],
-    "minimum-stability": "dev-master",
     "require": {
         "php": ">=4.0.3",
         "ext-curl": "*"
