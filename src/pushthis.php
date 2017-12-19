@@ -11,10 +11,6 @@ define("PUSHTHIS_VERSION_PHP", 1.0);
 define("PUSHTHIS_VERSION_NAME", "PUSHTHIS_PHP_API_".PUSHTHIS_VERSION_PHP);
 
 class Pushthis {
-	private $servers = array(
-		"na" => "https://na.pushthis.io",
-		"eu" => "https://eu.pushthis.io"
-	);
 	private $config = array();
 	public $channel = null;
 	public $event = null;
@@ -22,16 +18,10 @@ class Pushthis {
 	private $pem_cert = null;
 	public $errors = array();
 	
-	public function __construct($key = null, $secret = null, $region_server_name = "na"){
-		if($key === null || $secret === null){
-			throw new Exception("Key or Secret not Provided!");
-		}
-		
+	public function __construct($key, $secret, $region_server_name){
 		$this->config['key'] = $key;
 		$this->config['secret'] = $secret;
-		
-		// Set the Server based off of the Region Tag or set by URL in.
-		$this->config['server'] = isset($this->servers[$region_server_name]) ? $this->servers[$region_server_name] : $region_server_name;
+		$this->config['server'] = $region_server_name;
 	}
 	
 	/**
@@ -49,39 +39,24 @@ class Pushthis {
 		}
 	}
 	
-	private function get_extension($file) {
-		$extension = end(explode(".", $file));
-		return $extension ? $extension : false;
-	}
-	
 	/**
-	 * Checks if the String is an Array
-	 * @link https://stackoverflow.com/questions/6041741/
+	 * Check URL to see if it Ends with /api
+	 * @link https://regex101.com/r/fTPAZJ/2/
 	 */
-	private function isJson($string) {
-		json_decode($string);
-		return (json_last_error() == JSON_ERROR_NONE);
-	}
-	
-	/**
-	 * JSON, ARRAY
-	 * Reurns an Array if it is an Array or a JSON Array.
-	 */
-	private function ja($str) {
-		if(is_array($str)) { return $str; }
-		else {
-			$r = json_decode($string);
-			if(json_last_error() == JSON_ERROR_NONE){
-				return $r;
-			}
-		}
-		return false;
+	public function is_url_api(){
+		$m = preg_match_all("/^((http[s]?):\/)?\/?([^:\/\s]+)((\/\w+)*\/)api/", $this->config['server']);
+		return $m;
 	}
 	
 	/** 
 	 * Allow or Deny access to a Private Channel by the Socket Id and channel.
 	 */
 	public function authorize($allow = false, $channel, $socketId){
+		if($this->is_url_api()) { 
+			// THE URL IS NOT CORRECT FOR A AUTH REQUEST
+			$this->errors[] = "URL is not the Auth Access Point. Please Refer to the Pushthis.io Pocumentation for more information.";
+			return false;
+		}
 		if(!isset($channel) || !isset($socketId)){ return false; }
 		// Start the Request Data
 			$post = array(
@@ -97,10 +72,9 @@ class Pushthis {
 			);
 			
 		$post['payload'] = $t;
-		return $this->curl_post($post, $this->config['server']."/auth");
+		return $this->curl_post($post, $this->config['server']);
 		
 	}
-	
 	
 	/**
 	 * Using CURL Make the Request
@@ -175,6 +149,12 @@ class Pushthis {
 	 * This Function just needs the Payload Data and you can Provide the 
 	 */
 	public function send($data = null){
+		if($this->is_url_api()) { 
+			// THE URL IS NOT CORRECT FOR A SEND REQUEST
+			$this->errors[] = "URL is not the API Access Point. Please Refer to the Pushthis.io Pocumentation for more information.";
+			return false;
+		}
+		
 		// Start the Request Data
 			$post = array(
 				"key" => $this->config['key'],
@@ -219,7 +199,7 @@ class Pushthis {
 		else {
 			throw new Exception("Hmm... Pushthis is Pushed Out!");
 		}
-		return $this->curl_post($post, $this->config['server']."/api");
+		return $this->curl_post($post, $this->config['server']);
 	}
 	
 	/**
@@ -238,7 +218,7 @@ class Pushthis {
 				)
 			);
 		$post['payload'] = array_merge($post['payload'], $data);
-		return $this->curl_post($post, $this->config['server']."/api");
+		return $this->curl_post($post, $this->config['server']);
 	}
 }
 ?>
