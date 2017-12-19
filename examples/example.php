@@ -84,6 +84,6 @@ use Pushthis\Pushthis;
 		]
 	));
 	$queue_response = $pushthis->send();
-	echo queue_response;
+	echo $queue_response;
 	
 ?>

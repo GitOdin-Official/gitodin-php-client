@@ -12,8 +12,8 @@ define("PUSHTHIS_VERSION_NAME", "PUSHTHIS_PHP_API_".PUSHTHIS_VERSION_PHP);
 
 class Pushthis {
 	private $servers = array(
-		"na" => "https://na.pushthis.io/api",
-		"eu" => "https://eu.pushthis.io/api"
+		"na" => "https://na.pushthis.io",
+		"eu" => "https://eu.pushthis.io"
 	);
 	private $config = array();
 	public $channel = null;
@@ -78,13 +78,38 @@ class Pushthis {
 		return false;
 	}
 	
+	/** 
+	 * Allow or Deny access to a Private Channel by the Socket Id and channel.
+	 */
+	public function authorize($allow = false, $channel, $socketId){
+		if(!isset($channel) || !isset($socketId)){ return false; }
+		// Start the Request Data
+			$post = array(
+				"key" => $this->config['key'],
+				"secret" => $this->config['secret'],
+				"payload" => array()
+			);
+		// Payload Template
+			$t = array(
+				'channel' => $channel,
+				'authorized'   => $allow,
+				'socket_id'    => $socketId
+			);
+			
+		$post['payload'] = $t;
+		return $this->curl_post($post, $this->config['server']."auth");
+		
+	}
+	
+	
 	/**
 	 * Using CURL Make the Request
 	 */
 	private function curl_post($data, $url){
 		$content = json_encode($data);
 		$ch = curl_init($url);
-		
+		echo $content;
+		// Check if the Root Pem file is defiend, Yes? Verify Connection
 		if(isset($this->pem_cert) && file_exists($this->pem_cert)){
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
@@ -194,7 +219,7 @@ class Pushthis {
 		else {
 			throw new Exception("Hmm... Pushthis is Pushed Out!");
 		}
-		return $this->curl_post($post, $this->config['server']);
+		return $this->curl_post($post, $this->config['server']."/api");
 	}
 	
 	/**
@@ -213,7 +238,7 @@ class Pushthis {
 				)
 			);
 		$post['payload'] = array_merge($post['payload'], $data);
-		return $this->curl_post($post, $this->config['server']);
+		return $this->curl_post($post, $this->config['server']."/api");
 	}
 }
 ?>
