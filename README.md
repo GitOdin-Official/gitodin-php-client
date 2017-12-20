@@ -7,65 +7,86 @@
 ```
 
 # Pushthis PHP Package
-This is a package made for PHP, to interact with the Pushthis RESTful API Network Access Point to send payloads through the network to your client side in real-time! 
+This is a package made for PHP, to interact with the Pushthis RESTful API Network Access Point to send payloads through the network to your client side in real-time!
 
-# Installing
-```sh
-composer require pushthis/pushthis
-```
+---
 
-# How to use
-> Define your keys and access point
-```php
-$pushthis = new Pushthis('key', 'secret', 'Access Point');
-```
+# Getting Started
+> Installing using Composer
+>```sh
+>composer require pushthis/pushthis
+>```
 
-> Single Payload Requests
-```php
-$pushthis = new Pushthis('key', 'secret', 'Access Point');
-$pushthis->setChannel('channel');
-$pushthis->setEvent('event');
-$pushthis->send(array(
-	'username' => 'john_doe',
-	'message'  => 'Hello Everyone!'
-));
-```
+### How to use:
+> Load the Package using Composer
+>```php
+>require_once("autoload.php");
+>use Pushthis\Pushthis;
+>```
 
-> Multi-Payload Requests
-```php
-$pushthis = new Pushthis('key', 'secret', 'Access Point');
-$pushthis->add(array(
-	'channel' => 'the_chat',
-	'event' => 'new_message',
-	'data' => array(
-		'username' => 'john_doe',
-		'file_name'  => 'Hello Everyone!'
-	)
-));
-$pushthis->add(array(
-	'channel' => 'system',
-	'event' => 'alert',
-	'data' => array(
-		'username' => 'john_doe',
-		'message'  => 'THE INTERNET IS OFFLINE!'
-	)
-));
-$pushthis->send();
-```
+>Load the Package **not** using Composer (Downloaded from Github)
+>```php
+>require_once("pushthis-php-http/src/pushthis.php");
+>use Pushthis\Pushthis;
+>```
 
+### Starting an Instance
+> Define your Key, Secret and Access Point
+>```php
+>$pushthis = new Pushthis('key', 'secret', 'Access Point');
+>```
+
+### Sending Single Payload Requests
+> Below is the Code that will allow you send a Single Payload to Pushthis.io
+>```php
+>$pushthis = new Pushthis('key', 'secret', 'Access Point');
+>$pushthis->setChannel('channel');
+>$pushthis->setEvent('event');
+>$pushthis->send(array(
+>    'username' => 'john_doe',
+>    'message'  => 'Hello Everyone!'
+>));
+>```
+
+### Sending Multi-Payload Requests
+> Below you can send multiple payloads at once using the Queue
+>```php
+>$pushthis = new Pushthis('key', 'secret', 'Access Point');
+>$pushthis->add(array(
+>	'channel' => 'the_chat',
+>	'event' => 'new_message',
+>	'data' => array(
+>		'username' => 'john_doe',
+>		'file_name'  => 'Hello Everyone!'
+>	)
+>));
+>$pushthis->add(array(
+>	'channel' => 'system',
+>	'event' => 'alert',
+>	'data' => array(
+>		'username' => 'john_doe',
+>		'message'  => 'THE INTERNET IS OFFLINE!'
+>	)
+>));
+>$pushthis->send();
+>```
+
+### Authorizing Access to a Channel 
 > Authorizing Payload Request
-```php
-$pushthis = new Pushthis('key', 'secret', 'Access Point');
-$pushthis->authorize(boolean, "channel", "socketId");
-```
+>```php
+>$pushthis = new Pushthis('key', 'secret', 'Access Point');
+>$pushthis->authorize(true, "channel", "socketId");
+>```
 
-> Debugging
-```php
-print_r($pushthis->errors);
-```
+### Tracing Errors
+> Add this to your code after you have attempted to send something to see the errors
+>```php
+>print_r($pushthis->errors);
+>```
 
+---
 # Indepth Documentation
-> Documentation for Pushthis.io can be found at https://pushthis.io/documentation
+ Documentation for Pushthis.io can be found at https://pushthis.io/documentation
 
 # Contributors & Honorable Mentions
 - Devitgg @ https://github.com/devitgg
