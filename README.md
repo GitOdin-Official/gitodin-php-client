@@ -75,7 +75,7 @@ This is a package made for PHP, to interact with the Pushthis RESTful API Networ
 > Authorizing Payload Request
 >```php
 >$pushthis = new Pushthis('key', 'secret', 'Access Point');
->$pushthis->authorize(true, "channel", "socketId");
+>$pushthis->authorize(boolean, "channel", "socketId");
 >```
 
 ### Tracing Errors
