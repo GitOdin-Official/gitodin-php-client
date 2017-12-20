@@ -59,6 +59,11 @@ $pushthis = new Pushthis('key', 'secret', 'Access Point');
 $pushthis->authorize(boolean, "channel", "socketId");
 ```
 
+> Debugging
+```php
+print_r($pushthis->errors);
+```
+
 # Indepth Documentation
 > Documentation for Pushthis.io can be found at https://pushthis.io/documentation
 
