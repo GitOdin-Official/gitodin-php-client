@@ -1,3 +1,4 @@
+
 ```//      ____                     __     __     __      _                _        
   //     / __ \  __  __   _____   / /_   / /_   / /_    (_)   _____      (_)  ____ 
   //    / /_/ / / / / /  / ___/  / __ \ / __/  / __ \  / /   / ___/     / /  / __ \
@@ -14,18 +15,6 @@ composer require pushthis/pushthis
 ```
 
 # How to use
->Define the package 
-```php
-require_once("autoload.php");
-use Pushthis\Pushthis;
-```
-
-> **NOTE** -- if your using any PHP Framework, the following is not required. The framework is already doing it.
-```php
-require_once("autoload.php"); 
-```
-
-
 > Define your keys and access point
 ```php
 $pushthis = new Pushthis('key', 'secret', 'Access Point');
@@ -34,9 +23,9 @@ $pushthis = new Pushthis('key', 'secret', 'Access Point');
 > Single Payload Requests
 ```php
 $pushthis = new Pushthis('key', 'secret', 'Access Point');
+$pushthis->setChannel('channel');
+$pushthis->setEvent('event');
 $pushthis->send(array(
-	'channel' => 'the_chat',
-	'event' => 'new_message',
 	'username' => 'john_doe',
 	'message'  => 'Hello Everyone!'
 ));
@@ -67,7 +56,7 @@ $pushthis->send();
 > Authorizing Payload Request
 ```php
 $pushthis = new Pushthis('key', 'secret', 'Access Point');
-$pushthis->authorize(true, "channel", "socketId");
+$pushthis->authorize(boolean, "channel", "socketId");
 ```
 
 # Indepth Documentation
