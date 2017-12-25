@@ -13,6 +13,12 @@
             "email": "nhalstead00@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/pushthis/pushthis-php-http/issues",
+        "source": "https://github.com/pushthis/pushthis-php-http",
+        "wiki": "https://github.com/pushthis/pushthis-php-http/wiki",
+        "docs": "https://pushthis.io/documentation"
+    },
     "require": {
         "php": ">=4.0.3",
         "ext-curl": "*"
