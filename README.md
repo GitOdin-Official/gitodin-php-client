@@ -89,5 +89,5 @@ This is a package made for PHP, to interact with the Pushthis RESTful API Networ
  Documentation for Pushthis.io can be found at https://pushthis.io/documentation
 
 # Contributors & Honorable Mentions
-- Devitgg @ https://github.com/devitgg
+- Devitgg @ https://github.com/yordadev
 - Nhalstead @ https://github.com/nhalstead
