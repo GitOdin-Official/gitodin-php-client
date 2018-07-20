@@ -1,20 +1,20 @@
 <?php
-//require_once("../src/pushthis.php"); //Without Composer
+//require_once("../src/GitOdin.php"); //Without Composer
 require_once("../vendor/autoload.php"); //With Composer
-use Pushthis\Pushthis;
+use GitOdin\GitOdin;
 
 /**
  * Setup
  *
- * You need to Start Pushthis and give it your key to Connect with.
+ * You need to Start GitOdin and give it your key to Connect with.
  */
-	$pushthis = new Pushthis('key', 'secret', 'Access Point');
+	$GitOdin = new GitOdin('key', 'secret', 'Access Point');
 
 /**
  * Allow a Connection to a private Channel
  */
-	$auth_request = $pushthis->authorize(true, "demoChannel", "FadKJfypim1apPVBAAAJ");
+	$auth_request = $GitOdin->authorize(true, "demoChannel", "FadKJfypim1apPVBAAAJ");
 	echo $auth_request;
 
-print_r($pushthis->errors); // Show the Tracked the Errors
+print_r($GitOdin->errors); // Show the Tracked the Errors
 ?>

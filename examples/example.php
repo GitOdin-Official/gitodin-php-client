@@ -1,16 +1,16 @@
 <?php
-//require_once("../src/pushthis.php"); //Without Composer
+//require_once("../src/GitOdin.php"); //Without Composer
 require_once("../vendor/autoload.php"); //With Composer
-use Pushthis\Pushthis;
+use GitOdin\GitOdin;
 
 /**
  * Setup
  *
- * You need to Start Pushthis and give it your key to Connect with.
+ * You need to Start GitOdin and give it your key to Connect with.
  */
-	$pushthis = new Pushthis('key', 'secret', 'Access Point');
+	$GitOdin = new GitOdin('key', 'secret', 'Access Point');
 
-	$express_response = $pushthis->send(new Event(
+	$express_response = $GitOdin->send(new Event(
 		"channelName",
 		"eventName",
 		"someData"
@@ -23,7 +23,7 @@ use Pushthis\Pushthis;
  * Using the Bundeled Request you can send many events at once.
  * If you have set the Defaults of set_channel and set_event, they will be used.
  */
-	$bundled_response = $pushthis->send(new EventGroup(
+	$bundled_response = $GitOdin->send(new EventGroup(
 		new Event(
 			"server",
 			"pageEvents",
@@ -37,7 +37,7 @@ use Pushthis\Pushthis;
 		new Authentication(
 			"SOCKETID",
 			"CHANNELID",
-			Authentication::Allow
+			Authentication::Allow /* This is the same thing as True */
 		),
 		new Authentication(
 			"SOCKETID",
@@ -56,9 +56,9 @@ use Pushthis\Pushthis;
  *
  * If the Request Fails you may be reaching the Limit of the Post Size.
  * Please refer to the Docs for Help.
- * @link http://pushthis.io/documentation
+ * @link http://GitOdin.io/documentation
  */
-	$pushthis->add(new Event(
+	$GitOdin->add(new Event(
 		"server",
 		"pageEvents",
 		"reload"
@@ -67,8 +67,8 @@ use Pushthis\Pushthis;
 		"newData",
 		array("Something In the chat");
 	));
-	$queue_response = $pushthis->send();
+	$queue_response = $GitOdin->send();
 	echo $queue_response;
 
-print_r($pushthis->errors); // Show the Tracked the Errors
+print_r($GitOdin->errors); // Show the Tracked the Errors
 ?>

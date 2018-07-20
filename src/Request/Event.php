@@ -1,5 +1,5 @@
 <?php
-namespace Pushthis;
+namespace GitOdin;
 
 require_once("Payload.base.php");
 

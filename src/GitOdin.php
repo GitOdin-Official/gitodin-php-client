@@ -1,5 +1,5 @@
 <?php
-namespace Pushthis;
+namespace GitOdin;
 
 
 require_once("Request/Authentication.php");
@@ -8,11 +8,11 @@ require_once("Request/EventGroup.php");
 require_once("Request/Payload.base.php");
 
 /**
- * PushThis.io PHP API Package
+ * GitOdin.io PHP API Package
  *
- * @link http://pushthis.io/documentation
+ * @link http://GitOdin.io/documentation
  */
-class Pushthis {
+class GitOdin {
 	private $config = array();
 	public $messageQueue = array();
 	private $pem_cert = null;
@@ -38,13 +38,16 @@ class Pushthis {
 	public function __construct($secret = false, $region_server_name = false, $authServer = false){
 
 		if($secret == false){
-			$secret = env('PUSHTHIS_SECRET', FALSE);
+			$secret = getenv('GITODIN_SECRET', FALSE);
+			$this->errors[] = "[   SETUP  ] Secret Not Defined, Fallback ENV";
 		}
 		if($region_server_name == false){
-			$region_server_name = env('PUSHTHIS_SERVER', FALSE);
+			$region_server_name = getenv('GITODIN_SERVER', FALSE);
+			$this->errors[] = "[   SETUP  ] Server Not Defined, Fallback ENV";
 		}
 		if($authServer == false){
-			$authServer = env('PUSHTHIS_SERVERAUTH', FALSE);
+			$authServer = getenv('GITODIN_SERVERAUTH', FALSE);
+			$this->errors[] = "[   SETUP  ] Auth Server Not Defined, Fallback ENV";
 		}
 
 		$this->config['secret'] = $secret;
@@ -94,10 +97,10 @@ class Pushthis {
 	/**
 	 * Send a Packet. (Single Request)
 	 *
-	 * @param Pushthis\Authentication Packet for the Authentication Data
+	 * @param GitOdin\Authentication Packet for the Authentication Data
 	 * @return Boolean Response Boolean from the Server
 	 */
-	public function authorize(Pushthis\Authentication $aPacket){
+	public function authorize(Authentication $aPacket){
 		// Start the Request Data
 			$post = array(
 				"authorization" => array(
@@ -119,6 +122,8 @@ class Pushthis {
 	 */
 	private function curl_post(Array $data, String $url){
 		$content = json_encode($data);
+		$this->errors[] = "[ CURL:URL ] ".$url;
+
 		$ch = curl_init($url);
 
 		// Check if the Root Pem file is defiend, Yes? Verify Connection
@@ -128,21 +133,23 @@ class Pushthis {
 			curl_setopt($ch, CURLOPT_CAINFO, $this->pem_cert);
 		}
 		else{
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
 		}
 
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($ch, CURLOPT_USERAGENT, "Pushthis-PHP/".self::VERSION);
+		curl_setopt($ch, CURLOPT_USERAGENT, "GitOdin-PHP/".self::VERSION);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array(
 				'Content-Type: application/json',
 				'Content-Length: ' . strlen($content)
 			));
 		$result = curl_exec($ch);
+
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		if(curl_error($ch) != ""){ $this->errors[] = "[   ERROR  ]". curl_error($ch); /* Log Error */ }
+		if(curl_error($ch) != ""){ $this->errors[] = "[   ERROR  ] ". curl_error($ch); /* Log Error */ }
 		curl_close($ch);
 
 		if($result !== ""){
@@ -153,10 +160,12 @@ class Pushthis {
 
 		}
 
-		if($http_code == 200 || $http_code == 201){
+		if($http_code == 200 || $http_code == 201 || $http_code == 204){
+			$this->errors[] = "[ REQUEST  ] Good Response from Server ";
 			return true;
 		}
 		else {
+			$this->errors[] = "[ REQUEST  ] Bad Response from Server! ".$http_code;
 			return false;
 		}
 	}
@@ -166,9 +175,9 @@ class Pushthis {
 	 *
 	 * @param Array Payload Data
 	 */
-	public function add(Pushthis\Payload $input){
+	public function add(Payload $input){
 		$t = $input->getPayload();
-		$this->messageQueue[] = array_merge($t, $input);
+		$this->messageQueue[] = $input;
 		return $this;
 	}
 
@@ -182,7 +191,7 @@ class Pushthis {
 	 *  then the Payload is the String, If an Array is provided then it gets added as a full payload followed by getting sent.
 	 * @return Boolean Response Text from the Server
 	 */
-	public function send(Pushthis\Payload $data = null){
+	public function send(Payload $data = null){
 
 		// Start the Request Data
 		$post = array(
@@ -193,7 +202,7 @@ class Pushthis {
 		);
 
 	  // Check if you are Sending for the Pending Payloads.
-		if($data === null) {
+		if($data == null) {
 			if(!empty($this->messageQueue)){
 				// Running for Message Queue
 				$post['payload'] = $this->messageQueue; // Add the Messages to the Payload to send Now
@@ -207,29 +216,43 @@ class Pushthis {
 			$post['payload'][]  = $data->getPayload();
 		}
 
-		// DEV: Seperate Packets untill the rewrite comes back to change the Endpoint Payload
+	//// DEV: Seperate Packets untill the server has one endpoint for both payload types
 		$AuthPackets = [];
 		$DataPackets = [];
 
 		// Sort Packets for Dev Purpose
 		foreach($post['payload'] as $i => $packet){
-
 			// Check for Auth Packet, Data is unique for Auth packets
-			if(isset($packet['authorized']) == true){
-				$AuthPackets[] = $packet;
+			if(isset($packet->getPayload()['authorized']) == true){
+				$AuthPackets[] = $packet->getPayload();
 			}
 
 			// Check for Data Packet, Data is unique for Data packets
-			else if(isset($packet['data']) == true){
-					$DataPackets[] = $packet;
+			else if(isset($packet->getPayload()['data']) == true){
+					$DataPackets[] = $packet->getPayload();
 			}
 		}
 
-		$post['payload'] = $AuthPackets;
-		$this->curl_post($post, $this->config['serverAuth']);
 
-		$post['payload'] = $DataPackets;
-		$this->curl_post($post, $this->config['server']);
+		// Check Queue for Auth Packets
+		if(count($AuthPackets) != 0){
+			$post['payload'] = $AuthPackets;
+			$this->errors[] = "[POST:AUTH ] Starting Auth Requests";
+			$this->curl_post($post, $this->config['serverAuth']);
+		}
+		else {
+			$this->errors[] = "[POST:AUTH ] Skipping Auth Requests, No Requests in Queue";
+		}
+
+		// Check Queue for Data Packets
+		if(count($DataPackets) != 0){
+			$post['payload'] = $DataPackets;
+			$this->errors[] = "[POST:DATA ] Starting Data Requests";
+			$this->curl_post($post, $this->config['server']);
+		}
+		else {
+			$this->errors[] = "[POST:DATA ] Skipping Data Requests, No Requests in Queue";
+		}
 
 		return true;
 	}

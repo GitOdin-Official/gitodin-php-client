@@ -1,5 +1,5 @@
 <?php
-namespace Pushthis;
+namespace GitOdin;
 
 require_once("Payload.base.php");
 
@@ -16,7 +16,7 @@ class EventGroup implements Payload {
   public function __construct(){
     $events = func_get_args();
     foreach($events as $i => $v){
-      if( !is_a($v, "PushThis\Payload") ){
+      if( !is_a($v, "GitOdin\Payload") ){
         // Remove Any that are not a Payload Type
         unset($events[$i]);
       }
@@ -25,7 +25,7 @@ class EventGroup implements Payload {
   }
 
   /**
-   * Method Needed from PushThis\Payload
+   * Method Needed from GitOdin\Payload
    *
    * @return Array Payload Data
    */
@@ -35,7 +35,7 @@ class EventGroup implements Payload {
     // Load all of the Event Data into a Response Package with the Proper Data
     foreach($this->EventGroupBuffer as $k => $Event){
       // Verify the Object has the basic Methods for the Payload Requests
-      if(is_a($Event, 'PushThis\Payload') || method_exists($Event, 'getPayload')){
+      if(is_a($Event, 'GitOdin\Payload') || method_exists($Event, 'getPayload')){
         $response[] = $Event->getPayload();
       }
     }
@@ -46,9 +46,9 @@ class EventGroup implements Payload {
   /**
    * Add Object to the Buffer List
    *
-   * @param PushThis\Payload The Event you want to Add to the Group
+   * @param GitOdin\Payload The Event you want to Add to the Group
    */
-  public function add(PushThis\Payload $e){
+  public function add(GitOdin\Payload $e){
     $this->EventGroupBuffer[] = $e;
   }
 
