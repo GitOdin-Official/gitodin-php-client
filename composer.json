@@ -21,7 +21,7 @@
         "docs": "https://gitodin.com/documentation#intro"
     },
     "require": {
-        "php": ">=4.0.3",
+        "php": ">=5.0.0",
         "ext-curl": "*"
     },
     "autoload": {

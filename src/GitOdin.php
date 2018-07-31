@@ -1,11 +1,11 @@
 <?php
 namespace GitOdin;
 
-
 require_once("Request/Authentication.php");
 require_once("Request/Event.php");
 require_once("Request/EventGroup.php");
 require_once("Request/Payload.base.php");
+require_once("Trait/legacy-instance.trait.php");
 
 /**
  * GitOdin.io PHP API Package
@@ -13,10 +13,27 @@ require_once("Request/Payload.base.php");
  * @link http://GitOdin.io/documentation
  */
 class GitOdin {
+	use \Instance;
+
 	private $config = array();
 	public $messageQueue = array();
 	private $pem_cert = null;
-	public $errors = array();
+	public $errors = array(); // No Storage Limit. Erase when you need more memeory...
+	public $lastRequestTime = 0;
+	public $lastRequestRoundTime = 0;
+	public $lastHTTPCode = 0;
+	public $tStart = 0;
+
+	/**
+	 * This is just a an Alias of the getInstance function.
+	 * @NOTE: This will save the Main instance to the Class Static Instance so
+	 * it can call all of the same instance.
+	 */
+	public static function summon(){
+		$in = func_get_args();
+		return call_user_func_array("self::getInstance", $in); // Handled by Instance Trait.
+	}
+
 
 	const Allow = true;
   const Deny = false;
@@ -25,7 +42,7 @@ class GitOdin {
 	 * Used to Track the API Version, This gets used on the Backend
 	 *  for proper API compatibility with the request.
 	 */
-	const VERSION = 1.0;
+	const VERSION = 1.8;
 
 	/**
 	 * Create Instance
@@ -36,6 +53,10 @@ class GitOdin {
 	 * @param String Server Address Connecting to for the Auth API for Socket Connections
 	 */
 	public function __construct($secret = false, $region_server_name = false, $authServer = false){
+
+		$this->tStart = microtime(true); // Set Class Init Time
+
+		$this->errors[] = "[   SETUP  ] Starting New Instance";
 
 		if($secret == false){
 			$secret = getenv('GITODIN_SECRET', FALSE);
@@ -150,7 +171,6 @@ class GitOdin {
 
 		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		if(curl_error($ch) != ""){ $this->errors[] = "[   ERROR  ] ". curl_error($ch); /* Log Error */ }
-		curl_close($ch);
 
 		if($result !== ""){
 			if (preg_match('~Location: (.*)~i', $result, $match)) {
@@ -160,14 +180,50 @@ class GitOdin {
 
 		}
 
-		if($http_code == 200 || $http_code == 201 || $http_code == 204){
+		$this->lastRequestRoundTime = curl_getinfo($ch, CURLINFO_TOTAL_TIME);
+		$this->lastHTTPCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->lastRequestTime = microtime(true)- $this->tStart;
+
+		if($http_code == 0){
+			$this->errors[] = "[ REQUEST  ] Bad Request! (CURL Error)";
+			$this->errors[] = "[  ^CURL   ]   ".curl_error($ch);
+			$this->errors[] = "[  ^URL    ]   ".$url;
+			$this->errors[] = "[  ^AGENT  ]   "."GitOdin-PHP/".self::VERSION;
+			$this->errors[] = "[  ^PAYLOAD]   ".$content;
+		}
+		else if($http_code == 200 || $http_code == 201 || $http_code == 204){
 			$this->errors[] = "[ REQUEST  ] Good Response from Server ";
+			$this->errors[] = "[ REQUEST^ ] Request Time: ".curl_getinfo($ch, CURLINFO_TOTAL_TIME);
 			return true;
+		}
+		else if($http_code == 500){
+			$this->errors[] = "[ REQUEST  ] AHHH! Da Server is F*cked up again! ".$http_code;
+			$this->errors[] = "[  ^URL    ]   ".$url;
+			$this->errors[] = "[  ^AGENT  ]   "."GitOdin-PHP/".self::VERSION;
+			$this->errors[] = "[  ^PAYLOAD]   ".$content;
+		}
+		else if($http_code == 404){
+			$this->errors[] = "[ REQUEST  ] Hmm. I think you need to check the api URL! (Hint: Its Wrong!) ".$http_code;
+			$this->errors[] = "[  ^URL    ]   ".$url;
+			$this->errors[] = "[  ^AGENT  ]   "."GitOdin-PHP/".self::VERSION;
+			$this->errors[] = "[  ^PAYLOAD]   ".$content;
+		}
+		else if($http_code == 413){
+			$this->errors[] = "[ REQUEST  ] Uhh, You have a Big Requst! Split the Request so you can send it! ".$http_code;
+			$this->errors[] = "[  ^URL    ]   ".$url;
+			$this->errors[] = "[  ^AGENT  ]   "."GitOdin-PHP/".self::VERSION;
+			$this->errors[] = "[  ^PAYLOAD]   (Large Payload)";
 		}
 		else {
 			$this->errors[] = "[ REQUEST  ] Bad Response from Server! ".$http_code;
-			return false;
+			$this->errors[] = "[          ] ". str_replace("\r\n","",$result);
+			$this->errors[] = "[  ^URL    ]   ".$url;
+			$this->errors[] = "[  ^AGENT  ]   "."GitOdin-PHP/".self::VERSION;
+			$this->errors[] = "[  ^PAYLOAD]   ".$content;
 		}
+
+		curl_close($ch);
+		return false;
 	}
 
 	/**
@@ -233,12 +289,13 @@ class GitOdin {
 			}
 		}
 
+		$t = 0.00;
 
 		// Check Queue for Auth Packets
 		if(count($AuthPackets) != 0){
 			$post['payload'] = $AuthPackets;
 			$this->errors[] = "[POST:AUTH ] Starting Auth Requests";
-			$this->curl_post($post, $this->config['serverAuth']);
+			$t += $this->curl_post($post, $this->config['serverAuth']);
 		}
 		else {
 			$this->errors[] = "[POST:AUTH ] Skipping Auth Requests, No Requests in Queue";
@@ -248,13 +305,13 @@ class GitOdin {
 		if(count($DataPackets) != 0){
 			$post['payload'] = $DataPackets;
 			$this->errors[] = "[POST:DATA ] Starting Data Requests";
-			$this->curl_post($post, $this->config['server']);
+			$t += $this->curl_post($post, $this->config['server']);
 		}
 		else {
 			$this->errors[] = "[POST:DATA ] Skipping Data Requests, No Requests in Queue";
 		}
 
-		return true;
+		return $t;
 	}
 }
 ?>
