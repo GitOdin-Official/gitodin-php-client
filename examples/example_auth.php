@@ -1,29 +1,27 @@
 <?php
-//require_once("../src/pushthis.php"); //Without Composer
-require_once("../vendor/autoload.php"); //With Composer
-use Pushthis\Pushthis;
+require_once("../src/GitOdin.php"); //Without Composer
+//require_once("../vendor/autoload.php"); //With Composer
+use GitOdin\GitOdin;
+use GitOdin\Authentication;
 
 /**
  * Setup
- * 
- * You need to Start Pushthis and give it your key to Connect with.
- */
-	$pushthis = new Pushthis('key', 'secret', 'Access Point');
-	$pushthis->setPem("cacert.pem"); // Enable SSL Verification
-
-/** 
- * Set some Default Data for Express Request
  *
- * Using this you can make requests with less info to put in!
+ * You need to Start GitOdin and give it your key to Connect with.
  */
-	$pushthis->set_channel("demoChannel");
-	$pushthis->set_event("newMessages");
+$GitOdin = GitOdin::summon('*', 'Server', 'Auth Gateway');
 
 /**
  * Allow a Connection to a private Channel
  */
-	$auth_request = $pushthis->authorize(true, "demoChannel", "FadKJfypim1apPVBAAAJ");
-	echo $auth_request;
-	
-print_r($pushthis->errors); // Show the Tracked the Errors
+$auth_request = $GitOdin->authorize(
+ new Authentication(
+	 "FadKJfypim1apPVBAAAJ",
+	 "demoChannel",
+	 Authentication::Allow /* This is the same thing as True */
+ )
+);
+echo $auth_request;
+
+print_r($GitOdin->errors); // Show the Tracked the Errors
 ?>

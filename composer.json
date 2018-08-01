@@ -1,9 +1,10 @@
 {
-    "name": "pushthis\/pushthis",
-    "description": "Pushthis.io PHP Package",
+    "name": "gitodin\/php-client",
+    "description": "GitOdin PHP Package",
     "keywords": [
-        "Pushthis.io",
-        "Pushthis"
+        "GitOdin",
+        "GitOdin PHP",
+        "PHP Client"
     ],
     "type": "library",
     "license": "MIT",
@@ -14,24 +15,24 @@
         }
     ],
     "support": {
-        "issues": "https://github.com/pushthis/pushthis-php-http/issues",
-        "source": "https://github.com/pushthis/pushthis-php-http",
-        "wiki": "https://github.com/pushthis/pushthis-php-http/wiki",
-        "docs": "https://pushthis.io/documentation"
+        "issues": "https://github.com/GitOdin-Official/gitodin-php-client/issues",
+        "source": "https://github.com/GitOdin-Official/gitodin-php-client",
+        "wiki": "https://github.com/GitOdin-Official/gitodin-php-client/wiki",
+        "docs": "https://gitodin.com/documentation#intro"
     },
     "require": {
-        "php": ">=4.0.3",
+        "php": ">=5.0.0",
         "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {
-            "Pushthis\\": "src"
+            "GitOdin\\": "src"
         }
     },
     "repositories": [
         {
             "type": "git",
-            "url": "https:\/\/github.com\/pushthis\/pushthis-php-http"
+            "url": "https:\/\/github.com\/GitOdin-Official\/gitodin-php-client"
         }
     ]
 }
