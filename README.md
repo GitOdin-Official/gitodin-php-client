@@ -8,7 +8,7 @@ This is a package made for PHP, to interact with the GitOdin RESTful API Network
 # Getting Started
 > Installing using Composer
 >```sh
->composer require GitOdin/GitOdin
+>
 >```
 
 ### How to use:
