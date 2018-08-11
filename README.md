@@ -8,7 +8,7 @@ This is a package made for PHP, to interact with the GitOdin RESTful API Network
 # Getting Started
 > Installing using Composer
 >```sh
->
+> composer require gitodin/php-client
 >```
 
 ### How to use:
@@ -24,12 +24,23 @@ This is a package made for PHP, to interact with the GitOdin RESTful API Network
 >use GitOdin\GitOdin;
 >```
 
-
+> This will send an Payload to a Specific channel on the specified event.
+>```php
+>$GitOdin = GitOdin::summon('*', 'Server', 'Auth Gateway');
+>
+>$express_response = $GitOdin->send(new Event(
+>	"channelName",
+>	"eventName",
+>	"someData"
+>));
+>echo $express_response;
+>```
+> For more Examples check out the /examples folder.
 
 ---
 # Indepth Documentation
  Documentation for GitOdin.com can be found at https://GitOdin.com/documentation
 
-# Contributors & Honorable Mentions
+# Contributors
 - yordaDev @ https://github.com/yordadev
-- Nhalstead @ https://github.com/nhalstead
+- nhalstead @ https://github.com/nhalstead
