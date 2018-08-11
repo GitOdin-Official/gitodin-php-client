@@ -23,8 +23,4 @@ class Event implements Payload {
   public function getPayload(){
     return $this->EventData;
   }
-
 }
-
-
-?>
