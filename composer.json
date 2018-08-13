@@ -11,7 +11,8 @@
     "authors": [
         {
             "name": "Noah Halstead",
-            "email": "nhalstead00@gmail.com"
+            "email": "nhalstead00@gmail.com",
+            "role": "Developer"
         }
     ],
     "support": {
