@@ -1,6 +1,5 @@
 <p align="center"><img src='https://cdn.discordapp.com/attachments/479687985273503757/479688071898726420/Gitodin.jpg'/></p>
 
-# GitOdin PHP Package
 This is a package made for PHP, to interact with the GitOdin RESTful API Network Access Point to send payloads through the network to your client side in real-time!
 
 ---
