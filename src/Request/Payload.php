@@ -1,6 +1,6 @@
 <?php
 
-namespace GitOdin;
+namespace GitOdin\Request;
 
 /**
  *

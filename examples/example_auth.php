@@ -1,8 +1,10 @@
 <?php
-require_once("../src/GitOdin.php"); //Without Composer
-//require_once("../vendor/autoload.php"); //With Composer
+
+require_once("../vendor/autoload.php"); // Composer Method, Loading by PSR4
+//require_once("../src/GitOdin_load.php"); // Manual Load, no PSR4 Autoload
+
 use GitOdin\GitOdin;
-use GitOdin\Authentication;
+use GitOdin\Request\Authentication;
 
 /**
  * Setup

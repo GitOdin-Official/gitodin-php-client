@@ -1,10 +1,11 @@
 <?php
 
-require_once("../src/GitOdin.php");
+require_once("../vendor/autoload.php"); // Composer Method, Loading by PSR4
+//require_once("../src/GitOdin_load.php"); // Manual Load, no PSR4 Autoload
 
 use GitOdin\GitOdin;
-use GitOdin\Event;
-use GitOdin\Authentication;
+use GitOdin\Request\Event;
+use GitOdin\Request\Authentication;
 
 /**
  * @link http://php.net/manual/en/function.sleep.php#118635

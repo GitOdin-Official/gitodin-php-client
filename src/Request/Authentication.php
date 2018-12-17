@@ -1,7 +1,5 @@
 <?php
-namespace GitOdin;
-
-require_once("Payload.base.php");
+namespace GitOdin\Request;
 
 /**
  * This is for allowing Socket Connections with the Server
@@ -24,7 +22,7 @@ class Authentication implements Payload {
    * @param String Channel Name
    * @param Boolean Allow or Deny
    */
-  public function __construct(String $socket, String $channel, boolean $auth = null){
+  public function __construct(String $socket, String $channel, bool $auth = null){
     $this->EventData['socket_id'] = $socket;
     $this->EventData['channel'] = $channel;
     if($auth == null){

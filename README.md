@@ -13,13 +13,13 @@ This is a package made for PHP, to interact with the GitOdin RESTful API Network
 ### How to use:
 > Load the Package using Composer
 >```php
->require_once("autoload.php");
+>require_once("../vendor/autoload.php"); // Composer Method, Loading by PSR4
 >use GitOdin\GitOdin;
 >```
 
->Load the Package **not** using Composer (Downloaded from Github)
+>Load the Package **not** using Composer (Downloaded from GitHub)
 >```php
->require_once("GitOdin-php-http/src/GitOdin.php");
+>require_once("../src/GitOdin_load.php"); // Manual Load, no PSR4 Autoload
 >use GitOdin\GitOdin;
 >```
 

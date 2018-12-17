@@ -1,11 +1,12 @@
 <?php
-require_once("../src/GitOdin.php"); //Without Composer
-//require_once("../vendor/autoload.php"); //With Composer
+
+require_once("../vendor/autoload.php"); // Composer Method, Loading by PSR4
+//require_once("../src/GitOdin_load.php"); // Manual Load, no PSR4 Autoload
 
 use GitOdin\GitOdin;
-use GitOdin\Event;
-use GitOdin\EventGroup;
-use GitOdin\Authentication;
+use GitOdin\Request\Event;
+use GitOdin\Request\EventGroup;
+use GitOdin\Request\Authentication;
 
 /**
  * Setup
@@ -36,7 +37,7 @@ $bundled_response = $GitOdin->send(new EventGroup(
 	new Event(
 		"updates",
 		"newData",
-		array("Something In the chat");
+		array("Something In the chat")
 	),
 	new Authentication(
 		"SOCKETID",
@@ -69,7 +70,7 @@ echo $bundled_response;
 	))->add(new Event(
 		"updates",
 		"newData",
-		array("Something In the chat");
+		array("Something In the chat")
 	));
 	$queue_response = $GitOdin->send();
 	echo $queue_response;

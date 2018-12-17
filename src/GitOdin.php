@@ -1,19 +1,20 @@
 <?php
 namespace GitOdin;
 
-require_once("Request/Authentication.php");
-require_once("Request/Event.php");
-require_once("Request/EventGroup.php");
-require_once("Request/Payload.base.php");
-require_once("Trait/legacy-instance.trait.php");
+use GitOdin\Request\EventGroup;
+use GitOdin\Request\Event;
+use GitOdin\Request\Authentication;
+use GitOdin\Request\Payload;
+use GitOdin\Traits\InstanceInterface;
 
 /**
  * GitOdin.io PHP API Package
  *
  * @link http://GitOdin.io/documentation
  */
+
 class GitOdin {
-	use \Instance;
+	use InstanceInterface;
 
 	private $config = array();
 	public $messageQueue = array();
@@ -118,7 +119,7 @@ class GitOdin {
 	/**
 	 * Send a Packet. (Single Request)
 	 *
-	 * @param GitOdin\Authentication Packet for the Authentication Data
+	 * @param GitOdin\Request\Authentication Packet for the Authentication Data
 	 * @return Boolean Response Boolean from the Server
 	 */
 	public function authorize(Authentication $aPacket){
@@ -193,6 +194,7 @@ class GitOdin {
 		}
 		else if($http_code == 200 || $http_code == 201 || $http_code == 204){
 			$this->errors[] = "[ REQUEST  ] Good Response from Server ";
+			$this->errors[] = "[          ] ". str_replace("\r\n","",$result);
 			$this->errors[] = "[ REQUEST^ ] Request Time: ".curl_getinfo($ch, CURLINFO_TOTAL_TIME);
 			return true;
 		}
@@ -232,8 +234,7 @@ class GitOdin {
 	 * @param Array Payload Data
 	 */
 	public function add(Payload $input){
-		$t = $input->getPayload();
-		$this->messageQueue[] = $input;
+		$this->messageQueue[] = $input; // Add Payload to the Queue
 		return $this;
 	}
 
@@ -243,13 +244,13 @@ class GitOdin {
 	 * Prepair the Request and Tell curl_post to do it.
 	 * This Function just needs the Payload Data and you can Provide the
 	 *
-	 * @param Payload If Null is Specified then it Sends the Queue, If a String is provided
+	 * @param GitOdin\Request\Payload If Null is Specified then it Sends the Queue, If a String is provided
 	 *  then the Payload is the String, If an Array is provided then it gets added as a full payload followed by getting sent.
 	 * @return Boolean Response Text from the Server
 	 */
 	public function send(Payload $data = null){
 
-		// Start the Request Data
+		// Start the Request Data, Buffer
 		$post = array(
 			"authorization" => array(
 				"app_key" => $this->config['secret']
@@ -269,7 +270,7 @@ class GitOdin {
 
 		elseif ($data !== null) {
 			// Has a Payload Provided via the Input
-			$post['payload'][]  = $data->getPayload();
+			$post['payload'][] = $data; // Add Payload to Buffer
 		}
 
 	//// DEV: Seperate Packets untill the server has one endpoint for both payload types
@@ -280,12 +281,12 @@ class GitOdin {
 		foreach($post['payload'] as $i => $packet){
 			// Check for Auth Packet, Data is unique for Auth packets
 			if(isset($packet->getPayload()['authorized']) == true){
-				$AuthPackets[] = $packet->getPayload();
+				$AuthPackets[] = $packet->getPayload(); // Unwrap Instances to get just the Payload
 			}
 
 			// Check for Data Packet, Data is unique for Data packets
 			else if(isset($packet->getPayload()['data']) == true){
-					$DataPackets[] = $packet->getPayload();
+					$DataPackets[] = $packet->getPayload(); // Unwrap Instances to get just the Payload
 			}
 		}
 

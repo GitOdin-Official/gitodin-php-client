@@ -1,7 +1,5 @@
 <?php
-namespace GitOdin;
-
-require_once("Payload.base.php");
+namespace GitOdin\Request;
 
 /**
  *
